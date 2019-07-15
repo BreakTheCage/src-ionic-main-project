@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/places/tabs/offers"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{place?.title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding *ngIf="place">
+  <ion-button 
+    margin 
+    color="primary" 
+    [routerLink]="['/', 'places', 'tabs', 'offers', 'edit', place.id]"
+  >Edit</ion-button>
+</ion-content>
+<!-- first time when there is not place it must solve later; place?.id don't work -->
+<ion-content padding *ngIf="!place">
+  <ion-button 
+    margin 
+    color="primary" 
+    [routerLink]="['/', 'places', 'tabs', 'offers', 'edit', '0']"
+  >Edit</ion-button>
+</ion-content>
