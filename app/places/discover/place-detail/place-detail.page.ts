@@ -13,16 +13,16 @@ import { CreateBookingComponent } from '../../../bookings/create-booking/create-
 export class PlaceDetailPage implements OnInit {
   place: Place;
   constructor(
-    private route: ActivatedRoute, 
-    private placesService: PlacesService,
-    private navCtrl: NavController,
-    private modalCtrl: ModalController,
+    private route          : ActivatedRoute,
+    private placesService  : PlacesService,
+    private navCtrl        : NavController,
+    private modalCtrl      : ModalController,
     private actionSheetCtrl: ActionSheetController
   ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(paramMap => {
-      if(!paramMap.has('placeId')) {
+      if(!paramMap.has("placeId")) {
         this.navCtrl.navigateBack('/places/tabs/discover');
         return;
       }
@@ -32,7 +32,7 @@ export class PlaceDetailPage implements OnInit {
 
   onBookPlace() {
     this.actionSheetCtrl.create({
-      header: 'Choose an Action',
+      header : 'Choose an Action',
       buttons: [
         {
           text: 'Select Date',
@@ -41,7 +41,7 @@ export class PlaceDetailPage implements OnInit {
           }
         },
         {
-          text: 'Random Date',
+          text   : 'Random Date',
           handler: () => {
             this.openBookingModal('random');
           }
