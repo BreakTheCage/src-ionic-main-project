@@ -32,19 +32,54 @@
       <ion-col size-sm="6" offset-sm="3">
         <ion-item>
           <ion-label position="floating">Number of Guest</ion-label>
-          <ion-item>
-            <ion-label>Pizza</ion-label>
-            <ion-select multiple="true" placeholder="Select Pizza">
-              <ion-select-option value="peperoni">Peperoni</ion-select-option>
-              <ion-select-option value="hawaii">Hawaii</ion-select-option>
-            </ion-select>
-          </ion-item>
+          <ion-select name="guest-number" [ngModel]="'2'">
+            <ion-select-option value="1">1</ion-select-option>
+            <ion-select-option value="2">2</ion-select-option>
+            <ion-select-option value="3">3</ion-select-option>
+          </ion-select>
         </ion-item>
       </ion-col>
     </ion-row>
+    <ion-row>
+      <ion-col size-sm="3" offset-sm="3">
+        <ion-item>
+          <ion-label position="floating">From</ion-label>
+          <ion-datetime 
+            display-format="DD MMM YYYY" 
+            picker-format="YY MMM DD"
+            [min]="selectedPlace.availableFrom.toISOString()"
+            [max]="selectedPlace.availableTo.toISOString()"
+            ngModel 
+            name="date-from"
+            required
+            #startDateCtrl="ngModel"
+          ></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="3">
+        <ion-item>
+          <ion-label position="floating">To</ion-label>
+          <ion-datetime 
+            display-format="DD MMM YYYY" 
+            picker-format="YY MMM DD"
+            [min]="startDateCtrl.value"
+            [max]="selectedPlace.availableTo.toISOString()"
+            ngModel 
+            name="date-to"
+            required
+          ></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-button color="primary" expand="block" type="submit">
+          Book!
+        </ion-button>
+      </ion-col>
+    </ion-row>
   </ion-grid>
-  <ion-button color="primary" (click)="onBookPlace()">
-    Book!
-  </ion-button>
 </form>
 </ion-content>
