@@ -1,34 +1,123 @@
 https://stackblitz.com/run?devtoolsheight=50
 https://rxjs-dev.firebaseapp.com/guide/overview
 
-import { fromEvent, Observable } from 'rxjs';
-import { throttleTime, map, scan } from 'rxjs/operators';
+import { fromEvent, Observable, interval, Subject } from 'rxjs';
+import { throttleTime, map, scan, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 const button = document.querySelector('button');
+const input = document.querySelector('input');
+//6: debounceTime & distinctUntilChanged
+
+const observable = fromEvent(input, 'input');
+  
+  observable
+  .pipe(
+    map(event => event.target.value),
+    debounceTime(500),
+    distinctUntilChanged()
+  )
+  .subscribe({
+    next: function (value) {
+      console.log(value);
+    }
+  })
+
+//5) filter(): Lecture
+// const observabel = interval(1000);
+
+// observabel
+// .pipe(
+//   filter(function(value) {
+//     return value % 2 == 0;
+//   })
+// )
+// .subscribe({
+//   next: function(value) {
+//     console.log(value)
+//   },
+//   error: function(error) {
+//     console.log(error);
+//   },
+//   complete: function() {
+//     console.log('Completed!')
+//   }
+// })
+
 // button.addEventListener('click', (event) => console.log(event));
+//4th) Subject(): Lecture Examples
+// const subject = new Subject();
+// subject.subscribe({
+//   next: function(value) {
+//     console.log(value)
+//   },
+//   error: function(error) {
+//     console.log(error);
+//   },
+//   complete: function() {
+//     console.log('Completed!')
+//   }
+// })
 
-const observer = {
-  next: function(value) {
-    console.log(value);
-  },
-  error: function(error) {
-    console.log(error)
-  },
-  complete: function() {
-    console.log('Completet!')
-  }
-}
+// subject.subscribe({
+//   next: function(value) {
+//     console.log(value + 'Second subscribe')
+//   }
+// });
 
-const subscription = Observable.create(function(obs) {
-  button.onclick = function(event) {
-    obs.next(event);
-  }
-})
-.subscribe(observer);
+// subject.next('A new Data piece!');
+// subject.complete();
+// subject.error('It is a Error!');
 
-setTimeout(function(){
-  subscription.unsubscribe();
-},5000);
+
+//3d) interval(): Lecture Completed!
+// const observabel = interval(1000);
+// const observer = {
+//   next: function(value) {
+//     console.log(value);
+//   },
+//   error: function(error) {
+
+//   },
+//   complete: function() {
+
+//   }
+// }
+
+// observabel.pipe(
+//   map(function(value) {
+//   return 'Hello' + value;
+//   }),
+//   throttleTime(2000)
+// )
+// .subscribe(observer);
+
+
+
+
+//2nd: Lecture Example
+
+// const observer = {
+//   next: function(value) {
+//     console.log(value);
+//   },
+//   error: function(error) {
+//     console.log(error)
+//   },
+//   complete: function() {
+//     console.log('Completet!')
+//   }
+// }
+
+// const subscription = Observable.create(function(obs) {
+//   button.onclick = function(event) {
+//     obs.next(event);
+//   }
+// })
+// .subscribe(observer);
+
+// setTimeout(function(){
+//   subscription.unsubscribe();
+// },5000);
 
 // Observable.create(function(obs) {
 //   obs.next('A value');
