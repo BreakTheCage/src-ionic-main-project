@@ -1,7 +1,7 @@
 https://stackblitz.com/run?devtoolsheight=50
 https://rxjs-dev.firebaseapp.com/guide/overview
 
-import { fromEvent } from 'rxjs';
+import { fromEvent, Observable } from 'rxjs';
 import { throttleTime, map, scan } from 'rxjs/operators';
 
 const button = document.querySelector('button');
@@ -14,16 +14,41 @@ const observer = {
   error: function(error) {
     console.log(error)
   },
-  complete: 
+  complete: function() {
+    console.log('Completet!')
+  }
 }
 
-fromEvent(button, 'click')
-  .subscribe(value => {
-    console.log(value.clientX)
-  })
+const subscription = Observable.create(function(obs) {
+  button.onclick = function(event) {
+    obs.next(event);
+  }
+})
+.subscribe(observer);
+
+setTimeout(function(){
+  subscription.unsubscribe();
+},5000);
+
+// Observable.create(function(obs) {
+//   obs.next('A value');
+//   // obs.error('Error!');
+//   setTimeout(function(){
+//     obs.complete();
+//   },2000);
+//   obs.next('Second Value!')
+// })
+// .subscribe(observer);
+
+// fromEvent(button, 'click')
+//   .subscribe(observer);
 
 
 
+// fromEvent(button, 'click')
+//   .subscribe(value => {
+//     console.log(value.clientX)
+//   })
 
 
 // fromEvent(button, 'click')
