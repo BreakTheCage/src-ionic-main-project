@@ -1,0 +1,46 @@
+https://stackblitz.com/run?devtoolsheight=50
+
+
+import { fromEvent } from 'rxjs';
+import { throttleTime, map, scan } from 'rxjs/operators';
+
+const button = document.querySelector('button');
+// button.addEventListener('click', (event) => console.log(event));
+
+const observer = {
+  next: function(value) {
+    console.log(value);
+  },
+  error: function(error) {
+    console.log(error)
+  },
+  complete: 
+}
+
+fromEvent(button, 'click')
+  .subscribe(value => {
+    console.log(value.clientX)
+  })
+
+
+
+
+
+// fromEvent(button, 'click')
+//   .pipe(
+//     throttleTime(1000),
+//     map(data => data.clientY)
+//   )
+//   .subscribe(coordinate => {
+//     console.log(coordinate)
+//   })
+
+
+
+// fromEvent(document, 'click')
+//   .pipe(
+//     throttleTime(1000),
+//     map(event => event.clientX),
+//     scan((count, clientX) => count + clientX, 0)
+//   )
+//   .subscribe(count => console.log(count));
