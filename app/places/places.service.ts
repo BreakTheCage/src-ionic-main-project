@@ -3,6 +3,7 @@ import { Place } from './place.model';
 import { AuthService } from '../auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
 import { take, map, tap, delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -44,34 +45,42 @@ export class PlacesService {
     return this._places.asObservable();
   }
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private http: HttpClient) { }
 
   getPlace(id: string) {
     return this.places.pipe(
       take(1),
       map(places => {
-        return {...places.find(p=> p.id === id)}
+        return {...places.find( p => p.id === id ) };
       })
-      )
+      );
   }
 
   addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {
     const newPlace = new Place(
-      Math.random().toString(), 
+      Math.random().toString(),
       title, description,
       'https://i0.wp.com/www.photographyandtravel.com/wp-content/uploads/2017/05/B2.-Pena-Palace-043-Edit.jpg?resize=1090%2C807',
       price,
-      dateFrom, 
+      dateFrom,
       dateTo,
       this.authService.userId
      );
-     return this.places.pipe(
-       take(1), 
-       delay(1000),
-       tap(places => {
-          this._places.next(places.concat(newPlace))
-        })
-      );
+     return this.http
+     .post('https://ionic-angular-booking-place.firebaseio.com/offered-places.json', { ...newPlace, id : null })
+     .pipe(
+       tap(resData => {
+         console.log(resData);
+       })
+     );
+
+    //  return this.places.pipe(
+    //    take(1), 
+    //    delay(1000),
+    //    tap(places => {
+    //       this._places.next(places.concat(newPlace))
+    //   })
+    // );
   }
 
   updatePlace(placeId: string, title: string, description: string) {
