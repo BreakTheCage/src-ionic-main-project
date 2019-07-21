@@ -91,14 +91,6 @@ export class PlacesService {
         this._places.next(places.concat(newPlace))
       })
     );
-
-    //  return this.places.pipe(
-    //    take(1), 
-    //    delay(1000),
-    //    tap(places => {
-    //       this._places.next(places.concat(newPlace))
-    //   })
-    // );
   }
 
   updatePlace(placeId: string, title: string, description: string) {
