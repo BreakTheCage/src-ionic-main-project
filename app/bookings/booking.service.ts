@@ -21,7 +21,8 @@ export class BookingService {
         guestNumber: number,
         dateFrom   : Date,
         dateTo     : Date
-    ) {
+    ) 
+    {
         const newBooking = new Booking(
             Math.random().toString(),
             placeId,
@@ -32,15 +33,13 @@ export class BookingService {
             lastname,
             guestNumber,
             dateFrom,
-            dateTo
-        );
+            dateTo);
         return this.bookings.pipe(
             take(1),
             delay(1000),
             tap(bookings => {
                 this._bookings.next(bookings.concat(newBooking));
-            })
-        );
+            }));
     }
 
     cancelBooking(bookingId: string) {
