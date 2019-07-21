@@ -1,23 +1,23 @@
-import { Injectable } from '@angular/core';
-import { Place } from './place.model';
-import { AuthService } from '../auth/auth.service';
-import { BehaviorSubject } from 'rxjs';
-import { take, map, tap, delay, switchMap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { Place } from "./place.model";
+import { AuthService } from "../auth/auth.service";
+import { BehaviorSubject } from "rxjs";
+import { take, map, tap, switchMap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
 
 interface PlaceData {
-  id           : string;
-  title        : string;
-  description  : string;
-  imageUrl     : string;
-  price        : number;
-  userId       : string;
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  price: number;
+  userId: string;
   availableFrom: string;
-  availableTo  : string;
+  availableTo: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class PlacesService {
   private _places = new BehaviorSubject<Place[]>([]);
@@ -25,28 +25,30 @@ export class PlacesService {
     return this._places.asObservable();
   }
 
-  constructor(private authService: AuthService, private http: HttpClient) { }
+  constructor(private authService: AuthService, private http: HttpClient) {}
 
   fetchPlaces() {
     return this.http
-      .get<{[key: string]: PlaceData}>('https://ionic-angular-booking-place.firebaseio.com/offered-places.json')
+      .get<{ [key: string]: PlaceData }>(
+        "https://ionic-angular-booking-place.firebaseio.com/offered-places.json"
+      )
       .pipe(
         map(resData => {
           const places = [];
-          for(const key in resData) {
-            if(resData.hasOwnProperty(key)) {
+          for (const key in resData) {
+            if (resData.hasOwnProperty(key)) {
               places.push(
                 new Place(
-                  key, 
-                  resData[key].title, 
-                  resData[key].description, 
-                  resData[key].imageUrl, 
-                  resData[key].price, 
-                  new Date(resData[key].availableFrom), 
+                  key,
+                  resData[key].title,
+                  resData[key].description,
+                  resData[key].imageUrl,
+                  resData[key].price,
+                  new Date(resData[key].availableFrom),
                   new Date(resData[key].availableTo),
-                  resData[key].userId 
+                  resData[key].userId
                 )
-              )
+              );
             }
           }
           return places;
@@ -55,42 +57,64 @@ export class PlacesService {
         tap(places => {
           this._places.next(places);
         })
-      )
-  }
-
-  getPlace(id: string) {
-    return this.places.pipe(
-      take(1),
-      map(places => {
-        return {...places.find( p => p.id === id ) };
-      })
       );
   }
 
-  addPlace(title: string, description: string, price: number, dateFrom: Date, dateTo: Date) {
+  getPlace(id: string) {
+    return this.http
+      .get<PlaceData>(
+        `https://ionic-angular-booking-place.firebaseio.com/offered-places/${id}.json`
+      )
+      .pipe(
+        map(placeData => {
+          return new Place(
+            id,
+            placeData.title,
+            placeData.description,
+            placeData.imageUrl,
+            placeData.price,
+            new Date(placeData.availableFrom),
+            new Date(placeData.availableTo),
+            placeData.userId
+          );
+        })
+      );
+  }
+
+  addPlace(
+    title: string,
+    description: string,
+    price: number,
+    dateFrom: Date,
+    dateTo: Date
+  ) {
     let generatedId: string;
     const newPlace = new Place(
       Math.random().toString(),
-      title, description,
-      'https://i0.wp.com/www.photographyandtravel.com/wp-content/uploads/2017/05/B2.-Pena-Palace-043-Edit.jpg?resize=1090%2C807',
+      title,
+      description,
+      "https://i0.wp.com/www.photographyandtravel.com/wp-content/uploads/2017/05/B2.-Pena-Palace-043-Edit.jpg?resize=1090%2C807",
       price,
       dateFrom,
       dateTo,
       this.authService.userId
     );
     return this.http
-    .post<{name: string}>('https://ionic-angular-booking-place.firebaseio.com/offered-places.json', { ...newPlace, id : null })
-    .pipe(
-      switchMap(resData => {
-        generatedId = resData.name;
-        return this.places;
-      }),
-      take(1),
-      tap(places => {
-        newPlace.id = generatedId;
-        this._places.next(places.concat(newPlace))
-      })
-    );
+      .post<{ name: string }>(
+        "https://ionic-angular-booking-place.firebaseio.com/offered-places.json",
+        { ...newPlace, id: null }
+      )
+      .pipe(
+        switchMap(resData => {
+          generatedId = resData.name;
+          return this.places;
+        }),
+        take(1),
+        tap(places => {
+          newPlace.id = generatedId;
+          this._places.next(places.concat(newPlace));
+        })
+      );
   }
 
   updatePlace(placeId: string, title: string, description: string) {
@@ -102,25 +126,26 @@ export class PlacesService {
         updatedPlaces = [...places];
         const oldPlace = updatedPlaces[updatedPlaceIndex];
         updatedPlaces[updatedPlaceIndex] = new Place(
-          oldPlace.id, 
-          title, 
-          description, 
-          oldPlace.imageUrl, 
-          oldPlace.price, 
-          oldPlace.availableFrom, 
-          oldPlace.availableTo, 
+          oldPlace.id,
+          title,
+          description,
+          oldPlace.imageUrl,
+          oldPlace.price,
+          oldPlace.availableFrom,
+          oldPlace.availableTo,
           oldPlace.userId
         );
-        return this.http.put(`https://ionic-angular-booking-place.firebaseio.com/offered-places/${placeId}.json`, { ...updatedPlaces[updatedPlaceIndex], id : null });
+        return this.http.put(
+          `https://ionic-angular-booking-place.firebaseio.com/offered-places/${placeId}.json`,
+          { ...updatedPlaces[updatedPlaceIndex], id: null }
+        );
       }),
       tap(() => {
         this._places.next(updatedPlaces);
       })
     );
-    
   }
 }
-
 
 // [
 //   new Place(
