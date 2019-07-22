@@ -1,4 +1,4 @@
-<ion-header *ngIf="place && form">
+<ion-header >
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button
@@ -6,7 +6,7 @@
       ></ion-back-button>
     </ion-buttons>
     <ion-title>Edit Offer</ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons slot="primary" *ngIf="place && form">
       <ion-button (click)="onUpdateOffer()" [disabled]="!form?.valid">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
@@ -14,7 +14,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="place && form">
   <div *ngIf="isLoading" text-center>
     <ion-spinner color="primary"></ion-spinner>
   </div>
