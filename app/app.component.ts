@@ -22,6 +22,7 @@ export class AppComponent {
   }
 
   initializeApp() {
+    console.log('Is Hybrid? = ', this.platform.is('hybrid'));
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
